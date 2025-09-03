@@ -8,89 +8,129 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors - warm, minimal palette */
+    --background: 45 8% 98%;
+    --foreground: 240 6% 10%;
 
+    /* Card and surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 240 6% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 240 6% 10%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - elegant purple accent */
+    --primary: 256 67% 62%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 256 67% 55%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - warm neutral */
+    --secondary: 45 8% 96%;
+    --secondary-foreground: 240 6% 10%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted backgrounds */
+    --muted: 45 8% 95%;
+    --muted-foreground: 240 4% 46%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent colors */
+    --accent: 45 8% 92%;
+    --accent-foreground: 240 6% 10%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* States */
+    --destructive: 0 70% 58%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs */
+    --border: 45 8% 90%;
+    --input: 45 8% 94%;
+    --ring: 256 67% 62%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Sidebar - warm tones */
+    --sidebar-background: 45 8% 97%;
+    --sidebar-foreground: 240 5% 26%;
+    --sidebar-primary: 256 67% 62%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 45 8% 93%;
+    --sidebar-accent-foreground: 240 6% 10%;
+    --sidebar-border: 45 8% 88%;
+    --sidebar-ring: 256 67% 62%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Custom design tokens for note app */
+    --editor-background: 0 0% 100%;
+    --editor-selection: 256 67% 92%;
+    --note-item-hover: 45 8% 94%;
+    --shadow-soft: 0 0% 0% / 0.05;
+    --shadow-medium: 0 0% 0% / 0.1;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(256 67% 62%), hsl(280 70% 65%));
+    --gradient-subtle: linear-gradient(180deg, hsl(45 8% 99%), hsl(45 8% 96%));
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Base colors - dark mode with warm undertones */
+    --background: 240 6% 8%;
+    --foreground: 45 8% 92%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    /* Card and surfaces */
+    --card: 240 6% 10%;
+    --card-foreground: 45 8% 92%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 6% 10%;
+    --popover-foreground: 45 8% 92%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Primary - brighter purple for dark mode */
+    --primary: 256 67% 68%;
+    --primary-foreground: 240 6% 8%;
+    --primary-hover: 256 67% 72%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary - dark warm neutral */
+    --secondary: 240 6% 14%;
+    --secondary-foreground: 45 8% 92%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Muted backgrounds */
+    --muted: 240 6% 12%;
+    --muted-foreground: 240 4% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent colors */
+    --accent: 240 6% 16%;
+    --accent-foreground: 45 8% 92%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* States */
+    --destructive: 0 70% 62%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Borders and inputs */
+    --border: 240 6% 18%;
+    --input: 240 6% 14%;
+    --ring: 256 67% 68%;
+
+    /* Sidebar - dark mode */
+    --sidebar-background: 240 6% 6%;
+    --sidebar-foreground: 45 8% 85%;
+    --sidebar-primary: 256 67% 68%;
+    --sidebar-primary-foreground: 240 6% 8%;
+    --sidebar-accent: 240 6% 12%;
+    --sidebar-accent-foreground: 45 8% 92%;
+    --sidebar-border: 240 6% 16%;
+    --sidebar-ring: 256 67% 68%;
+
+    /* Custom design tokens for dark mode */
+    --editor-background: 240 6% 10%;
+    --editor-selection: 256 67% 18%;
+    --note-item-hover: 240 6% 14%;
+    --shadow-soft: 0 0% 0% / 0.2;
+    --shadow-medium: 0 0% 0% / 0.3;
+    
+    /* Gradients - darker versions */
+    --gradient-primary: linear-gradient(135deg, hsl(256 67% 68%), hsl(280 70% 72%));
+    --gradient-subtle: linear-gradient(180deg, hsl(240 6% 10%), hsl(240 6% 8%));
   }
 }
 
@@ -100,6 +140,101 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Rich text editor styles */
+  .ProseMirror {
+    outline: none;
+    padding: 1.5rem;
+    line-height: 1.7;
+    font-size: 1rem;
+    color: hsl(var(--foreground));
+    background: hsl(var(--editor-background));
+    min-height: 200px;
+    border-radius: var(--radius);
+  }
+
+  .ProseMirror::selection,
+  .ProseMirror *::selection {
+    background: hsl(var(--editor-selection));
+  }
+
+  .ProseMirror h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 1.5rem 0 1rem 0;
+    color: hsl(var(--foreground));
+  }
+
+  .ProseMirror h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 1.25rem 0 0.75rem 0;
+    color: hsl(var(--foreground));
+  }
+
+  .ProseMirror h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 1rem 0 0.5rem 0;
+    color: hsl(var(--foreground));
+  }
+
+  .ProseMirror p {
+    margin: 0.75rem 0;
+  }
+
+  .ProseMirror ul, .ProseMirror ol {
+    padding-left: 1.5rem;
+    margin: 0.75rem 0;
+  }
+
+  .ProseMirror li {
+    margin: 0.25rem 0;
+  }
+
+  .ProseMirror strong {
+    font-weight: 600;
+  }
+
+  .ProseMirror em {
+    font-style: italic;
+  }
+
+  .ProseMirror blockquote {
+    border-left: 3px solid hsl(var(--primary));
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ProseMirror hr {
+    border: none;
+    border-top: 1px solid hsl(var(--border));
+    margin: 2rem 0;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
   }
 }
