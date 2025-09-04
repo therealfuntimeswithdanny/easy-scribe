@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Note {
   id: string;
@@ -15,42 +16,19 @@ export const useNotes = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [activeNote, setActiveNote] = useState<Note | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check authentication status
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      
-      if (user) {
-        loadNotes();
-      } else {
-        // For demo purposes, create a temporary user session
-        signInAnonymously();
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  const signInAnonymously = async () => {
-    const { data, error } = await supabase.auth.signInAnonymously();
-    if (error) {
-      console.error('Anonymous sign in error:', error);
-      toast({
-        title: "Authentication Error",
-        description: "Failed to create session. Using local storage for demo.",
-        variant: "destructive",
-      });
-      // Fallback to local storage
-      loadNotesFromLocalStorage();
-    } else {
-      setUser(data.user);
+    if (user) {
       loadNotes();
+    } else {
+      setIsLoading(false);
+      setNotes([]);
+      setActiveNote(null);
     }
-  };
+  }, [user]);
+
 
   const loadNotes = async () => {
     try {
@@ -69,30 +47,14 @@ export const useNotes = () => {
       console.error('Error loading notes:', error);
       toast({
         title: "Error",
-        description: "Failed to load notes. Using local storage as fallback.",
+        description: "Failed to load notes.",
         variant: "destructive",
       });
-      loadNotesFromLocalStorage();
     } finally {
       setIsLoading(false);
     }
   };
 
-  const loadNotesFromLocalStorage = () => {
-    const savedNotes = localStorage.getItem('notes');
-    if (savedNotes) {
-      const parsedNotes = JSON.parse(savedNotes);
-      setNotes(parsedNotes);
-      if (parsedNotes.length > 0) {
-        setActiveNote(parsedNotes[0]);
-      }
-    }
-    setIsLoading(false);
-  };
-
-  const saveNoteToLocalStorage = (updatedNotes: Note[]) => {
-    localStorage.setItem('notes', JSON.stringify(updatedNotes));
-  };
 
   const createNote = async () => {
     const newNote = {
@@ -102,28 +64,27 @@ export const useNotes = () => {
       updated_at: new Date().toISOString(),
     };
 
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to create notes.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      if (user) {
-        const { data, error } = await supabase
-          .from('notes')
-          .insert([{ ...newNote, user_id: user.id }])
-          .select()
-          .single();
+      const { data, error } = await supabase
+        .from('notes')
+        .insert([{ ...newNote, user_id: user.id }])
+        .select()
+        .single();
 
-        if (error) throw error;
+      if (error) throw error;
 
-        const createdNote = data as Note;
-        setNotes(prev => [createdNote, ...prev]);
-        setActiveNote(createdNote);
-      } else {
-        // Fallback to local storage
-        const id = Date.now().toString();
-        const noteWithId = { ...newNote, id };
-        const updatedNotes = [noteWithId, ...notes];
-        setNotes(updatedNotes);
-        setActiveNote(noteWithId);
-        saveNoteToLocalStorage(updatedNotes);
-      }
+      const createdNote = data as Note;
+      setNotes(prev => [createdNote, ...prev]);
+      setActiveNote(createdNote);
 
       toast({
         title: "Note Created",
@@ -140,15 +101,15 @@ export const useNotes = () => {
   };
 
   const updateNote = async (noteId: string, updates: Partial<Note>) => {
-    try {
-      if (user) {
-        const { error } = await supabase
-          .from('notes')
-          .update(updates)
-          .eq('id', noteId);
+    if (!user) return;
 
-        if (error) throw error;
-      }
+    try {
+      const { error } = await supabase
+        .from('notes')
+        .update(updates)
+        .eq('id', noteId);
+
+      if (error) throw error;
 
       // Update local state
       const updatedNotes = notes.map(note =>
@@ -158,10 +119,6 @@ export const useNotes = () => {
       
       if (activeNote?.id === noteId) {
         setActiveNote(prev => prev ? { ...prev, ...updates, updated_at: new Date().toISOString() } : null);
-      }
-
-      if (!user) {
-        saveNoteToLocalStorage(updatedNotes);
       }
     } catch (error) {
       console.error('Error updating note:', error);
@@ -174,25 +131,21 @@ export const useNotes = () => {
   };
 
   const deleteNote = async (noteId: string) => {
-    try {
-      if (user) {
-        const { error } = await supabase
-          .from('notes')
-          .delete()
-          .eq('id', noteId);
+    if (!user) return;
 
-        if (error) throw error;
-      }
+    try {
+      const { error } = await supabase
+        .from('notes')
+        .delete()
+        .eq('id', noteId);
+
+      if (error) throw error;
 
       const updatedNotes = notes.filter(note => note.id !== noteId);
       setNotes(updatedNotes);
 
       if (activeNote?.id === noteId) {
         setActiveNote(updatedNotes.length > 0 ? updatedNotes[0] : null);
-      }
-
-      if (!user) {
-        saveNoteToLocalStorage(updatedNotes);
       }
 
       toast({
@@ -229,7 +182,6 @@ export const useNotes = () => {
     notes,
     activeNote,
     isLoading,
-    user,
     createNote,
     updateNote,
     deleteNote,

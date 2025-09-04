@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import { RichTextEditor } from '@/components/RichTextEditor';
 import { NoteSidebar } from '@/components/NoteSidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useNotes } from '@/hooks/useNotes';
-import { PenTool, Menu, X } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { PenTool, Menu, X, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const NotesApp = () => {
+  const { user, loading: authLoading, signOut } = useAuth();
   const {
     notes,
     activeNote,
@@ -68,15 +71,19 @@ export const NotesApp = () => {
     }
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your notes...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
   }
 
   return (
@@ -135,7 +142,23 @@ export const NotesApp = () => {
             </div>
           </div>
 
-          {activeNote && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground hidden sm:inline">
+              {user.email}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={signOut}
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Title Section */}
+        {activeNote && (
+          <div className="bg-card border-b border-border p-4">
             <div className="flex items-center gap-2">
               {editingTitle ? (
                 <Input
@@ -156,8 +179,8 @@ export const NotesApp = () => {
                 </h1>
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Editor */}
         <div className="flex-1 p-6 overflow-auto">
