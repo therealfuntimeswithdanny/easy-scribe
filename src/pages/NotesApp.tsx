@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
 import { RichTextEditor } from '@/components/RichTextEditor';
 import { NoteSidebar } from '@/components/NoteSidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useNotes } from '@/hooks/useNotes';
 import { useAuth } from '@/hooks/useAuth';
-import { PenTool, Menu, X, LogOut } from 'lucide-react';
+import { PenTool, Menu, X, LogOut, Cloud, CloudOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Auth } from '@/pages/Auth';
 
 export const NotesApp = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -15,17 +16,20 @@ export const NotesApp = () => {
     notes,
     activeNote,
     isLoading,
+    isSyncing,
     createNote,
     updateNote,
     deleteNote,
     selectNote,
     debouncedUpdate,
+    syncWithCloud,
   } = useNotes();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [editingTitle, setEditingTitle] = useState(false);
   const [tempTitle, setTempTitle] = useState('');
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   useEffect(() => {
     if (activeNote) {
@@ -71,7 +75,7 @@ export const NotesApp = () => {
     }
   };
 
-  if (authLoading || isLoading) {
+  if (isLoading) {
     return (
       <div className="h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -82,12 +86,17 @@ export const NotesApp = () => {
     );
   }
 
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-
   return (
     <div className="h-screen bg-gradient-subtle flex overflow-hidden">
+      {/* Auth Dialog */}
+      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Sign in to sync your notes</DialogTitle>
+          </DialogHeader>
+          <Auth onSuccess={() => setShowAuthDialog(false)} />
+        </DialogContent>
+      </Dialog>
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
@@ -143,16 +152,36 @@ export const NotesApp = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground hidden sm:inline">
-              {user.email}
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={signOut}
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
+            {user ? (
+              <>
+                <span className="text-sm text-muted-foreground hidden sm:inline">
+                  {user.email}
+                </span>
+                {isSyncing && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b border-primary"></div>
+                    <span className="hidden sm:inline">Syncing...</span>
+                  </div>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={signOut}
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAuthDialog(true)}
+                className="flex items-center gap-2"
+              >
+                <CloudOff className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign in to sync</span>
+              </Button>
+            )}
           </div>
         </div>
 
